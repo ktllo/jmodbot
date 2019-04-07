@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+	<Appenders>
+		<RollingFile name="base" fileName="detail.log" filePattern="detail_%i.log">
+		    <PatternLayout>
+		        <Pattern>%d %m%n</Pattern>
+		    </PatternLayout>
+		    <Policies>
+				<SizeBasedTriggeringPolicy size="10 MB"/>
+			</Policies>
+			<DefaultRolloverStrategy max="20"/>
+		    <!-- <MarkerFilter marker="usage" onMatch="ACCEPT" onMismatch="DENY"/>  -->
+		</RollingFile>
+		<RollingFile name="std" fileName="bot.log" filePattern="bot.%i.log">
+            <PatternLayout>
+                <Pattern>%d %p [%t] %m %ex%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+            <MarkerFilter marker="RawIO" onMatch="DENY" onMismatch="ACCEPT"/>
+        </RollingFile>
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout>
+                <Pattern>%d %p [%t] %m %ex%n</Pattern>
+            </PatternLayout>
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Root level="trace">
+			<AppenderRef ref="std" level="WARN"/>
+			<AppenderRef ref="STDOUT" level="DEBUG"/>
+			<AppenderRef ref="base" level="trace"/>
+		</Root>
+	</Loggers>
+</Configuration>
