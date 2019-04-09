@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -18,17 +19,71 @@ public class IRCSocket {
 	Logger log = LoggerFactory.getLogger(IRCSocket.class);
 	
 	private Queue<String> sendQueue = new LinkedList<>();
+	
 	private final String TOKEN_SEND_Q = new String();
+	private final String TOKEN_STATUS_CHG = new String();
 	
+	private ConnectionStatus status;
 	
+	private IRCConnectionConfiguration config;
 	private Socket socket;
 	
+	private Receiver receiver;
+	private Sender sender;
+	
+	@Deprecated
 	public IRCSocket(Socket socket) {
 		this.socket = socket;
 		new Sender().start();
-		new Receiver().start();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+			return;
+		}
+		new Receiver(reader).start();
 	}
 	
+	public void connect() throws IOException {
+		synchronized(TOKEN_STATUS_CHG) {
+			if(status!=ConnectionStatus.NOT_CONNECTED&&status!=ConnectionStatus.DISCONNECTED) {
+				throw new IllegalStateException();
+			}
+			status = ConnectionStatus.CONNECTING;
+		}
+		try {
+			socket = new Socket(config.getHostname(),config.getPort());
+		}catch (IOException e) {
+			log.error(e.getMessage(),e);
+			status = ConnectionStatus.FAILED;
+			throw e;
+		}
+		sender = new Sender();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+		receiver = new Receiver(reader);
+		
+		sender.start();
+		receiver.start();
+	}
+	
+	
+	public void disconnect() {
+		sender.stop();
+		receiver.stop();
+		
+		try {
+			socket.close();
+		} catch (IOException e) {
+			log.error(e.getMessage(),e);
+		}
+		status = ConnectionStatus.DISCONNECTED;
+	}
 	/**
 	 * @param line
 	 * @throws IOException
@@ -156,6 +211,22 @@ public class IRCSocket {
 		}
 	}
 	
+	public ConnectionStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ConnectionStatus status) {
+		this.status = status;
+	}
+
+	public IRCConnectionConfiguration getConfig() {
+		return config;
+	}
+
+	public void setConfig(IRCConnectionConfiguration config) {
+		this.config = config;
+	}
+
 	class Sender extends Thread{
 		public void run() {
 			while(true) {
@@ -189,14 +260,16 @@ public class IRCSocket {
 	}
 	
 	class Receiver extends Thread{
+		
+		BufferedReader reader = null;
+		
+		public Receiver(BufferedReader reader) {
+			this.reader = reader;
+		}
+		
 		public void run() {
-			BufferedReader reader = null;
-			try {
-				reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			} catch (IOException e) {
-				log.error(e.getMessage(), e);
-				return;
-			}
+			
+			
 			while(true) {
 				String line;
 				try {
