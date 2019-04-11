@@ -227,6 +227,23 @@ public class IRCSocket {
 		this.config = config;
 	}
 
+	public void sendMessage(MessageDestination md, String message) {
+		try {
+			sendRaw("PRIVMSG "+md.getMessageDestination()+" :"+message);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			log.error(e.getMessage(),e);
+		}
+	}
+	public void sendNotice(MessageDestination md, String message) {
+		try {
+			sendRaw("NOTICE "+md.getMessageDestination()+" :"+message);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			log.error(e.getMessage(),e);
+		}
+	}
+	
 	class Sender extends Thread{
 		public void run() {
 			while(true) {
