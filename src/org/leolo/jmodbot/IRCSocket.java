@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.leolo.jmodbot.util.PriorityQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,7 @@ public class IRCSocket {
 	
 	Logger log = LoggerFactory.getLogger(IRCSocket.class);
 	
-	private Queue<String> sendQueue = new LinkedList<>();
+	private PriorityQueue sendQueue = new PriorityQueue(8192);
 	
 	private final String TOKEN_SEND_Q = new String();
 	private final String TOKEN_STATUS_CHG = new String();
@@ -102,7 +103,7 @@ public class IRCSocket {
 	public void sendRaw(String line) throws IOException{
 		String [] lines = line.split("\n");
 		for(String s:lines) {
-			doSendRaw(s);
+			doSendRaw(s.replace("\r", ""));
 		}
 	}
 	
@@ -205,12 +206,23 @@ public class IRCSocket {
 	
 	protected void processPingMessage(String line) {
 		try {
-			sendRaw("PONG "+line.substring(5));
+			sendRawPriority("PONG "+line.substring(5));
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}
 	}
 	
+	private void sendRawPriority(String string) throws IOException {
+		try {
+			sendQueue.addPriority(string);
+		}catch(IllegalStateException e) {
+			throw new IOException("Send-Q exceeded", e);
+		}
+		synchronized(TOKEN_SEND_Q) {
+			TOKEN_SEND_Q.notifyAll();
+		}
+	}
+
 	public ConnectionStatus getStatus() {
 		return status;
 	}
@@ -249,12 +261,11 @@ public class IRCSocket {
 			while(true) {
 				if(!sendQueue.isEmpty()) {
 					String line = sendQueue.poll();
-					if(!line.endsWith("\r\n")) {
-						line = line.concat("\r\n");
-					}
 					try {
 						log.debug(Constants.LOG_MARKER_RAW_IO,">{}",line);
 						socket.getOutputStream().write(line.getBytes());
+						socket.getOutputStream().write("\r\n".getBytes());
+						
 					} catch (IOException e) {
 						log.error(e.getMessage(), e);
 					}
@@ -288,12 +299,16 @@ public class IRCSocket {
 			
 			
 			while(true) {
-				String line;
+				String line = null;
 				try {
 					line = reader.readLine();
 				} catch (IOException e) {
 					log.error(e.getMessage(), e);
-					continue;
+					disconnect();
+				}
+				if(line==null) {
+					log.error("Cannot read from socket");
+					disconnect();
 				}
 				log.info(Constants.LOG_MARKER_RAW_IO,"<{}", line);
 				String uline = line.toUpperCase();
