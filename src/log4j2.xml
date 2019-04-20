@@ -13,7 +13,7 @@
 		</RollingFile>
 		<RollingFile name="std" fileName="bot.log" filePattern="bot.%i.log">
             <PatternLayout>
-                <Pattern>%d %p [%t] %m %ex%n</Pattern>
+                <Pattern>%d %-5p [%-10t] %m %ex%n</Pattern>
             </PatternLayout>
             <Policies>
                 <SizeBasedTriggeringPolicy size="10 MB"/>
@@ -23,7 +23,7 @@
         </RollingFile>
 		<Console name="STDOUT" target="SYSTEM_OUT">
 			<PatternLayout>
-                <Pattern>%d %p [%t] %m %ex%n</Pattern>
+                <Pattern>%d %-5p [%-10t] %m %ex%n</Pattern>
             </PatternLayout>
 		</Console>
 	</Appenders>

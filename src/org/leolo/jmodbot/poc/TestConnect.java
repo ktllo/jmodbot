@@ -13,7 +13,7 @@ public class TestConnect {
 		Logger log = LoggerFactory.getLogger(TestConnect.class);
 		Socket s = new Socket("192.168.56.102", 6667);
 		IRCSocket ircs = new IRCSocket(s);
-		ircs.sendRaw("CAP LS 302");
+		ircs.sendRaw("CAP REQ :sasl");
 		ircs.sendRaw("CAP END");
 		ircs.sendRaw("NICK TestBot");
 		ircs.sendRaw("USER user user 192.168.56.102 :realname");

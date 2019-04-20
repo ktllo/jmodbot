@@ -1,6 +1,15 @@
 package org.leolo.jmodbot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
+
+import org.apache.commons.collections4.list.UnmodifiableList;
+import org.apache.commons.collections4.map.UnmodifiableMap;
 
 public class IRCConnectionConfiguration {
 	
@@ -11,9 +20,17 @@ public class IRCConnectionConfiguration {
 	private boolean acceptAllCertificate;
 	
 	private String nickname;
+	private String fullname;
 	
-	private Set<String> capRequested;
-
+	private List<Class<? extends CAPModule>> capModules;
+	
+	private Map<String, String> customConfig;
+	
+	public IRCConnectionConfiguration() {
+		capModules = new Vector<>();
+		customConfig = new Hashtable<>();
+	}
+	
 	/**
 	 * @return the hostname
 	 */
@@ -86,13 +103,157 @@ public class IRCConnectionConfiguration {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-
-	public Set<String> getCapRequested() {
-		return capRequested;
-	}
-
-	public void setCapRequested(Set<String> capRequested) {
-		this.capRequested = capRequested;
+	
+	public void addCAPModule(Class<? extends CAPModule> module) {
+		capModules.add(module);
 	}
 	
+	public String getFullname() {
+		return fullname;
+	}
+
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+	
+	public void addCustomConfig(String key, String value) {
+		this.customConfig.put(key, value);
+	}
+	
+	public ConfigurationSnapshot build() {
+		return new ConfigurationSnapshot();
+	}
+	
+	public class ConfigurationSnapshot{
+		private ConfigurationSnapshot() {
+			this.hostname = IRCConnectionConfiguration.this.hostname;
+			this.port = IRCConnectionConfiguration.this.port;
+			this.useSSL = IRCConnectionConfiguration.this.useSSL;
+			this.acceptAllCertificate = IRCConnectionConfiguration.this.acceptAllCertificate;
+			this.nickname = IRCConnectionConfiguration.this.nickname;
+			this.fullname = IRCConnectionConfiguration.this.fullname;
+			List<Class<? extends CAPModule>> list = new ArrayList<>();
+			list.addAll(IRCConnectionConfiguration.this.capModules);
+			this.capModules = new UnmodifiableList<>(list);
+			Map<String, String> map = new HashMap<>();
+			map.putAll(IRCConnectionConfiguration.this.customConfig);
+			this.customConfig = UnmodifiableMap.unmodifiableMap(map);
+		}
+
+		private String hostname;
+		private int port;
+		
+		private boolean useSSL;
+		private boolean acceptAllCertificate;
+		
+		private String nickname;
+		private String fullname;
+		
+		private List<Class<? extends CAPModule>> capModules;
+		private Map<String, String> customConfig;
+		/**
+		 * @return the hostname
+		 */
+		public String getHostname() {
+			return hostname;
+		}
+
+		/**
+		 * @param hostname the hostname to set
+		 */
+		public void setHostname(String hostname) {
+			this.hostname = hostname;
+		}
+
+		/**
+		 * @return the port
+		 */
+		public int getPort() {
+			return port;
+		}
+
+		/**
+		 * @param port the port to set
+		 */
+		public void setPort(int port) {
+			this.port = port;
+		}
+
+		/**
+		 * @return the useSSL
+		 */
+		public boolean isUseSSL() {
+			return useSSL;
+		}
+
+		/**
+		 * @param useSSL the useSSL to set
+		 */
+		public void setUseSSL(boolean useSSL) {
+			this.useSSL = useSSL;
+		}
+
+		/**
+		 * @return the acceptAllCertificate
+		 */
+		public boolean isAcceptAllCertificate() {
+			return acceptAllCertificate;
+		}
+
+		/**
+		 * @param acceptAllCertificate the acceptAllCertificate to set
+		 */
+		public void setAcceptAllCertificate(boolean acceptAllCertificate) {
+			this.acceptAllCertificate = acceptAllCertificate;
+		}
+
+		/**
+		 * @return the nickname
+		 */
+		public String getNickname() {
+			return nickname;
+		}
+
+		/**
+		 * @param nickname the nickname to set
+		 */
+		public void setNickname(String nickname) {
+			this.nickname = nickname;
+		}
+
+		/**
+		 * @return the fullname
+		 */
+		public String getFullname() {
+			return fullname;
+		}
+
+		/**
+		 * @param fullname the fullname to set
+		 */
+		public void setFullname(String fullname) {
+			this.fullname = fullname;
+		}
+
+		/**
+		 * @return the capModules
+		 */
+		public List<Class<? extends CAPModule>> getCapModules() {
+			return capModules;
+		}
+
+		/**
+		 * @param capModules the capModules to set
+		 */
+		public void setCapModules(List<Class<? extends CAPModule>> capModules) {
+			this.capModules = capModules;
+		}
+
+		/**
+		 * @return the customConfig
+		 */
+		public Map<String, String> getCustomConfig() {
+			return customConfig;
+		}
+	}
 }
