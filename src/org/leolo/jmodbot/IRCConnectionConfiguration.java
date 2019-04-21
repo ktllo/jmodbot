@@ -21,6 +21,7 @@ public class IRCConnectionConfiguration {
 	
 	private String nickname;
 	private String fullname;
+	private String serverPassword;
 	
 	private List<Class<? extends CAPModule>> capModules;
 	
@@ -124,6 +125,14 @@ public class IRCConnectionConfiguration {
 		return new ConfigurationSnapshot();
 	}
 	
+	public String getServerPassword() {
+		return serverPassword;
+	}
+
+	public void setServerPassword(String serverPassword) {
+		this.serverPassword = serverPassword;
+	}
+
 	public class ConfigurationSnapshot{
 		private ConfigurationSnapshot() {
 			this.hostname = IRCConnectionConfiguration.this.hostname;
@@ -138,6 +147,7 @@ public class IRCConnectionConfiguration {
 			Map<String, String> map = new HashMap<>();
 			map.putAll(IRCConnectionConfiguration.this.customConfig);
 			this.customConfig = UnmodifiableMap.unmodifiableMap(map);
+			this.serverPassword=IRCConnectionConfiguration.this.serverPassword;
 		}
 
 		private String hostname;
@@ -148,6 +158,7 @@ public class IRCConnectionConfiguration {
 		
 		private String nickname;
 		private String fullname;
+		private String serverPassword;
 		
 		private List<Class<? extends CAPModule>> capModules;
 		private Map<String, String> customConfig;
@@ -159,24 +170,10 @@ public class IRCConnectionConfiguration {
 		}
 
 		/**
-		 * @param hostname the hostname to set
-		 */
-		public void setHostname(String hostname) {
-			this.hostname = hostname;
-		}
-
-		/**
 		 * @return the port
 		 */
 		public int getPort() {
 			return port;
-		}
-
-		/**
-		 * @param port the port to set
-		 */
-		public void setPort(int port) {
-			this.port = port;
 		}
 
 		/**
@@ -187,24 +184,10 @@ public class IRCConnectionConfiguration {
 		}
 
 		/**
-		 * @param useSSL the useSSL to set
-		 */
-		public void setUseSSL(boolean useSSL) {
-			this.useSSL = useSSL;
-		}
-
-		/**
 		 * @return the acceptAllCertificate
 		 */
 		public boolean isAcceptAllCertificate() {
 			return acceptAllCertificate;
-		}
-
-		/**
-		 * @param acceptAllCertificate the acceptAllCertificate to set
-		 */
-		public void setAcceptAllCertificate(boolean acceptAllCertificate) {
-			this.acceptAllCertificate = acceptAllCertificate;
 		}
 
 		/**
@@ -215,24 +198,10 @@ public class IRCConnectionConfiguration {
 		}
 
 		/**
-		 * @param nickname the nickname to set
-		 */
-		public void setNickname(String nickname) {
-			this.nickname = nickname;
-		}
-
-		/**
 		 * @return the fullname
 		 */
 		public String getFullname() {
 			return fullname;
-		}
-
-		/**
-		 * @param fullname the fullname to set
-		 */
-		public void setFullname(String fullname) {
-			this.fullname = fullname;
 		}
 
 		/**
@@ -243,17 +212,14 @@ public class IRCConnectionConfiguration {
 		}
 
 		/**
-		 * @param capModules the capModules to set
-		 */
-		public void setCapModules(List<Class<? extends CAPModule>> capModules) {
-			this.capModules = capModules;
-		}
-
-		/**
 		 * @return the customConfig
 		 */
 		public Map<String, String> getCustomConfig() {
 			return customConfig;
+		}
+
+		public String getServerPassword() {
+			return serverPassword;
 		}
 	}
 }

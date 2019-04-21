@@ -144,6 +144,9 @@ public class IRCSocket {
 		stage = ConnectionStage.AWAIT_CAP_ACK;
 		this.registerResponseListener("CAP", new CAPAckListenModule() );
 		sendRawPriority(sb.toString());
+		if(config.getServerPassword()!=null) {
+			sendRawPriority("PASS "+config.getServerPassword());
+		}
 		sendRawPriority("NICK "+config.getNickname());
 		sendRawPriority("USER "+config.getNickname()+" "+config.getNickname()+" - :"+config.getFullname());
 		
@@ -157,19 +160,13 @@ public class IRCSocket {
 		}
 		//TODO: Check ACKed CAP
 		for(CAPModule cm:capModules) {
-			threadPool.execute(new Runnable() {
-				@Override
-				public void run() {
-					cm.perfromPreconnectionSequence();
-				}
-			});
-		}
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			log.error(e.getMessage(),e);
+			cm.perfromPreconnectionSequence();
 		}
 		sendRaw("CAP END");
+		stage = ConnectionStage.CONNECTED;
+		synchronized (TOKEN_STATUS_CHG) {
+			status = ConnectionStatus.CONNECTED;
+		}
 	}
 
 	public void disconnect() {
