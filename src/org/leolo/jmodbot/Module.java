@@ -1,5 +1,7 @@
 package org.leolo.jmodbot;
 
+import org.leolo.jmodbot.IRCConnectionConfiguration.ConfigurationSnapshot;
+
 public abstract class Module {
 	
 	private IRCSocket socket;
@@ -18,5 +20,9 @@ public abstract class Module {
 	
 	public void processGenericMessage(String [] tokens) {
 		
+	}
+	
+	protected final ConfigurationSnapshot getConfig() {
+		return socket.getConfig();
 	}
 }

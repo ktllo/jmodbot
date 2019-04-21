@@ -156,8 +156,20 @@ public class IRCSocket {
 			}
 		}
 		//TODO: Check ACKed CAP
-		
-		sendRawPriority("CAP END");
+		for(CAPModule cm:capModules) {
+			threadPool.execute(new Runnable() {
+				@Override
+				public void run() {
+					cm.perfromPreconnectionSequence();
+				}
+			});
+		}
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			log.error(e.getMessage(),e);
+		}
+		sendRaw("CAP END");
 	}
 
 	public void disconnect() {
@@ -354,8 +366,8 @@ public class IRCSocket {
 					String line = sendQueue.poll();
 					try {
 						log.debug(Constants.LOG_MARKER_RAW_IO, ">{}", line);
+						line = line.concat("\r\n");
 						socket.getOutputStream().write(line.getBytes());
-						socket.getOutputStream().write("\r\n".getBytes());
 					} catch (IOException e) {
 						log.error(e.getMessage(), e);
 					}
@@ -450,6 +462,16 @@ public class IRCSocket {
 						});
 					}
 				}
+				if(messageReceiver.containsKey(tokens[0])) {
+					for(Module m:messageReceiver.get(tokens[0])) {
+						threadPool.execute(new Runnable() {
+							@Override
+							public void run() {
+								m.processGenericMessage(tokens);
+							}
+						});
+					}
+				}
 				
 			}
 		}
@@ -481,5 +503,12 @@ public class IRCSocket {
 			}
 		}
 		
+	}
+
+	/**
+	 * @return the config
+	 */
+	public IRCConnectionConfiguration.ConfigurationSnapshot getConfig() {
+		return config;
 	}
 }
