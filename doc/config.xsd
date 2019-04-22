@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://jmodbot.leolo.org/2019/"
+	xmlns="http://jmodbot.leolo.org/2019/" elementFormDefault="qualified">
+	<xs:element name="configuration" type="configuration"/>
+	<xs:complexType name="configuration">
+		<xs:sequence>
+			<xs:element name="network" maxOccurs="unbounded" type="network"/>
+			<xs:element name="database" type="database"/>
+			<xs:element name="identity" maxOccurs="unbounded" type="identity"/>
+			<xs:element name="caps" minOccurs="0" type="caps"/>
+			<xs:element name="custom-configs" minOccurs="0" type="custom-configs"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="network">
+		<xs:sequence>
+			<xs:element name="server" type="server"/>
+			<xs:element name="caps" minOccurs="0" type="caps"/>
+			<xs:element name="custom-configs" minOccurs="0" type="custom-configs"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="database"></xs:complexType>
+	<xs:complexType name="identity"></xs:complexType>
+	<xs:complexType name="caps">
+		<xs:all>
+			<xs:element name="cap" type="simplePair"/>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="custom-configs">
+		<xs:sequence>
+			<xs:element name="custom-config" type="simplePair" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="simplePair">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="value" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="server">
+		<xs:sequence>
+			<xs:element name="ssl" minOccurs="0" type="ssl"/>
+		</xs:sequence>
+		<xs:attribute name="path" type="xs:string"/>
+		<xs:attribute name="port">
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:minExclusive value="0"></xs:minExclusive>
+					<xs:maxInclusive value="65535"></xs:maxInclusive>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ssl">
+		<xs:sequence>
+			<xs:group ref="trustStore" minOccurs="0"/>
+			<xs:group ref="cleintCert" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="enable" type="xs:boolean" use="optional"/>
+		<xs:attribute name="acceptAny" type="xs:boolean" use="optional"/>
+		<xs:attribute name="parameter" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="trustStore">
+		<xs:attribute name="path" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="pkcs12">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="passphrase" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="pkcs12File">
+		<xs:attribute name="path" type="xs:string"/>
+		<xs:attribute name="passphrase" type="xs:string"/>
+	</xs:complexType>
+	
+	<xs:group name="trustStore">
+		<xs:choice>
+			<xs:element name="trustStore" type="trustStore"/>
+			<xs:element name="rootCert" type="xs:string"/>
+		</xs:choice>
+	</xs:group>
+	<xs:group name="cleintCert">
+		<xs:choice>
+			<xs:element name="pkcs12" type="pkcs12"/>
+			<xs:element name="pkcs12File" type="pkcs12File"/>
+		</xs:choice>
+	</xs:group>
+</xs:schema>
