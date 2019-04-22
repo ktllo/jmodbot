@@ -50,6 +50,7 @@ public class IRCSocket {
 
 	ConnectionStage stage = ConnectionStage.SOCKET_NOT_CONNECTED;
 	private IRCConnectionConfiguration.ConfigurationSnapshot config;
+	private IRCNetwork network;
 	private Socket socket;
 
 	private Receiver receiver;
@@ -63,7 +64,6 @@ public class IRCSocket {
 		CONNECTION_ID = IdentifierGenerator.getInstance().getConnectionIdentifier();
 		messageReceiver = new HashMap<>();
 		threadPool = Executors.newFixedThreadPool(Constants.THREAD_COUNT, new ThreadFactory() {
-
 			@Override
 			public Thread newThread(Runnable r) {
 				Thread t = new Thread(r);
@@ -72,9 +72,10 @@ public class IRCSocket {
 				}
 				return t;
 			}
-			
 		});
 		this.config = config.build();
+		network = new IRCNetwork();
+		network.setNickname(config.getNickname());
 	}
 
 	@Deprecated
@@ -507,5 +508,12 @@ public class IRCSocket {
 	 */
 	public IRCConnectionConfiguration.ConfigurationSnapshot getConfig() {
 		return config;
+	}
+
+	/**
+	 * @return the network
+	 */
+	protected IRCNetwork getNetwork() {
+		return network;
 	}
 }
