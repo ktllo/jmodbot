@@ -18,9 +18,26 @@
 			<xs:element name="custom-configs" minOccurs="0" type="custom-configs"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:ID" use="optional"/>
+		<xs:attribute name="identity" type="xs:IDREF" />
 	</xs:complexType>
-	<xs:complexType name="database"></xs:complexType>
-	<xs:complexType name="identity"></xs:complexType>
+	<xs:complexType name="database">
+		<xs:sequence>
+			<xs:element name="dialect" type="xs:string"/>
+			<xs:element name="driver" type="xs:string"/>
+			<xs:choice>
+				<xs:element name="server" type="dbServer"/>
+				<xs:element name="jndi" type="jndi"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="identity">
+		<xs:sequence>
+			<xs:element name="nickname" type="xs:string" maxOccurs="unbounded"/>
+			<xs:group ref="authParam"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:ID"/>
+		<xs:attribute name="type" type="xs:string"/>
+	</xs:complexType>
 	<xs:complexType name="caps">
 		<xs:all>
 			<xs:element name="cap" type="simplePair"/>
@@ -52,7 +69,7 @@
 	<xs:complexType name="ssl">
 		<xs:sequence>
 			<xs:group ref="trustStore" minOccurs="0"/>
-			<xs:group ref="cleintCert" minOccurs="0"/>
+			<xs:group ref="clientCert" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="enable" type="xs:boolean" use="optional"/>
 		<xs:attribute name="acceptAny" type="xs:boolean" use="optional"/>
@@ -72,17 +89,32 @@
 		<xs:attribute name="path" type="xs:string"/>
 		<xs:attribute name="passphrase" type="xs:string"/>
 	</xs:complexType>
-	
+	<xs:complexType name="dbServer">
+		<xs:sequence>
+			<xs:element name="connection-string" type="xs:string"/>
+			<xs:group ref="authParam"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="jndi">
+		<xs:group ref="authParam"/>
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
 	<xs:group name="trustStore">
 		<xs:choice>
 			<xs:element name="trustStore" type="trustStore"/>
 			<xs:element name="rootCert" type="xs:string"/>
 		</xs:choice>
 	</xs:group>
-	<xs:group name="cleintCert">
+	<xs:group name="clientCert">
 		<xs:choice>
 			<xs:element name="pkcs12" type="pkcs12"/>
 			<xs:element name="pkcs12File" type="pkcs12File"/>
 		</xs:choice>
+	</xs:group>
+	<xs:group name="authParam">
+		<xs:all>
+			<xs:element name="username" type="xs:string"/>
+			<xs:element name="password" type="xs:string"/>
+		</xs:all>
 	</xs:group>
 </xs:schema>
