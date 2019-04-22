@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration SYSTEM "config.dtd">
+<configuration>
+	<network id="n_testnet" name="TestNet" identity="id_01">
+		<server host="192.168.56.102"/>
+		<server host="172.16.64.6">
+			<ssl enable="true" acceptAny="true"/>
+		</server>
+		<custom-configs> 
+			<custom-config name="auto-rejoin" value="true"/>
+		</custom-configs>
+		<channels>
+			<channel name="#test"/>
+		</channels>
+	</network>
+	<network id="freenode" name="Freenode" identity="id_01">
+		<server host="chat.freenode.net" port="7000">
+			<ssl enable="true">
+				<truststore path="truststore.jks"/>
+			</ssl>
+		</server>
+		<channels>
+			<channel name="#freenode"/>
+			<channel name="##secretChannel" key="channelPassword"/>
+		</channels>
+	</network>
+	<database>
+		<database-dialect>org.hibernate.dialect.Oracle12cDialect</database-dialect>
+		<database-driver>oracle.jdbc.OracleDriver</database-driver>
+		<database-server path="jbdc:oracle:thin:@/localhost:1521/xe">
+			<username>xe</username>
+			<password>password</password>
+		</database-server>
+	</database>
+	<identity id="id_01" nickname="JModBot">
+		<authentication-parameter type="sasl">
+			<username>jmodbot</username>
+			<password>password</password>
+		</authentication-parameter>
+		<authentication-parameter type="serverpassword">
+			<password>jmodbot:password</password>
+		</authentication-parameter>
+	</identity>
+	<caps>
+		<cap>org.leolo.jmodbot.SASLCapModule</cap>
+	</caps>
+</configuration>
