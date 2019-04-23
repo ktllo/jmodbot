@@ -8,17 +8,21 @@
 			<xs:element name="database" type="database"/>
 			<xs:element name="identity" maxOccurs="unbounded" type="identity"/>
 			<xs:element name="caps" minOccurs="0" type="caps"/>
+			<xs:element name="modules" type="modules" minOccurs="0"/>
 			<xs:element name="custom-configs" minOccurs="0" type="custom-configs"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="network">
 		<xs:sequence>
-			<xs:element name="server" type="server"/>
+			<xs:element name="server" type="server" maxOccurs="unbounded"/>
+			<xs:element name="channels" type="channels" minOccurs="0"/>
 			<xs:element name="caps" minOccurs="0" type="caps"/>
+			<xs:element name="modules" type="modules" minOccurs="0"/>
 			<xs:element name="custom-configs" minOccurs="0" type="custom-configs"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:ID" use="optional"/>
 		<xs:attribute name="identity" type="xs:IDREF" />
+		<xs:attribute name="name" type="xs:string" />
 	</xs:complexType>
 	<xs:complexType name="database">
 		<xs:sequence>
@@ -40,7 +44,7 @@
 	</xs:complexType>
 	<xs:complexType name="caps">
 		<xs:all>
-			<xs:element name="cap" type="simplePair"/>
+			<xs:element name="cap" type="xs:string"/>
 		</xs:all>
 	</xs:complexType>
 	<xs:complexType name="custom-configs">
@@ -56,7 +60,7 @@
 		<xs:sequence>
 			<xs:element name="ssl" minOccurs="0" type="ssl"/>
 		</xs:sequence>
-		<xs:attribute name="path" type="xs:string"/>
+		<xs:attribute name="host" type="xs:string"/>
 		<xs:attribute name="port">
 			<xs:simpleType>
 				<xs:restriction base="xs:int">
@@ -68,7 +72,7 @@
 	</xs:complexType>
 	<xs:complexType name="ssl">
 		<xs:sequence>
-			<xs:group ref="trustStore" minOccurs="0"/>
+			<xs:group ref="g_trustStore" minOccurs="0"/>
 			<xs:group ref="clientCert" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="enable" type="xs:boolean" use="optional"/>
@@ -77,6 +81,7 @@
 	</xs:complexType>
 	<xs:complexType name="trustStore">
 		<xs:attribute name="path" type="xs:string"/>
+		<xs:attribute name="passphrase" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="pkcs12">
 		<xs:simpleContent>
@@ -99,7 +104,35 @@
 		<xs:group ref="authParam"/>
 		<xs:attribute name="name" type="xs:string"/>
 	</xs:complexType>
-	<xs:group name="trustStore">
+	<xs:complexType name="channels">
+		<xs:sequence>
+			<xs:element name="channel" type="channel" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="channel">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="key" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="modules">
+		<xs:sequence>
+			<xs:element name="module" type="module" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="module">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="runtimeName" type="xs:string" use="optional"/>
+		<xs:attribute name="type" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="static"></xs:enumeration>
+					<xs:enumeration value="dymanic"></xs:enumeration>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	
+	
+	<xs:group name="g_trustStore">
 		<xs:choice>
 			<xs:element name="trustStore" type="trustStore"/>
 			<xs:element name="rootCert" type="xs:string"/>
@@ -112,9 +145,9 @@
 		</xs:choice>
 	</xs:group>
 	<xs:group name="authParam">
-		<xs:all>
-			<xs:element name="username" type="xs:string"/>
-			<xs:element name="password" type="xs:string"/>
-		</xs:all>
+		<xs:sequence>
+			<xs:element name="username" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="password" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
 	</xs:group>
 </xs:schema>
