@@ -110,27 +110,31 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="channel">
+		<xs:sequence>
+			<xs:element name="modules" type="modules" minOccurs="0"/>
+		</xs:sequence>
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="key" type="xs:string" use="optional"/>
 	</xs:complexType>
 	<xs:complexType name="modules">
 		<xs:sequence>
-			<xs:element name="module" type="module" maxOccurs="unbounded"/>
+			<xs:element name="staticModule" type="smodule" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="dymanicModule" type="dmodule" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="excludeModule" type="emodule" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="module">
+	<xs:complexType name="smodule">
 		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="runtimeName" type="xs:string" use="optional"/>
-		<xs:attribute name="type" use="optional">
-			<xs:simpleType>
-				<xs:restriction base="xs:string">
-					<xs:enumeration value="static"></xs:enumeration>
-					<xs:enumeration value="dymanic"></xs:enumeration>
-				</xs:restriction>
-			</xs:simpleType>
-		</xs:attribute>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
 	</xs:complexType>
-	
+	<xs:complexType name="dmodule">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="runtimeName" type="xs:string" use="required"/>
+		<xs:attribute name="id" type="xs:ID" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="emodule">
+		<xs:attribute name="id" type="xs:IDREF"/>
+	</xs:complexType>
 	
 	<xs:group name="g_trustStore">
 		<xs:choice>

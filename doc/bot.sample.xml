@@ -21,12 +21,18 @@
 			</ssl>
 		</server>
 		<channels>
-			<channel name="#freenode"/>
+			<channel name="#freenode">
+				<modules>
+					<excludeModule id="m1"/>
+					<excludeModule id="m2"/>
+				</modules>
+			</channel>
 			<channel name="##secretChannel" key="channelPassword"/>
 		</channels>
 		<modules>
-			<module name="com.sample.jmodbot.modules.MarkovChain" runtimeName="mbot1"/>
-			<module name="com.sample.jmodbot.modules.MarkovChain" runtimeName="mbot2"/>
+			<dymanicModule name="com.sample.jmodbot.modules.MarkovChain" runtimeName="mbot1" id="m1"/>
+			<dymanicModule name="com.sample.jmodbot.modules.MarkovChain" runtimeName="mbot2" id=""/>
+			<excludeModule id="m_dm"/>
 		</modules>
 	</network>
 	<database>
@@ -47,7 +53,7 @@
 		<cap>org.leolo.jmodbot.SASLCapModule</cap>
 	</caps>
 	<modules>
-		<module name="org.leolo.jmodbot.BotInfoModule" type="static"/>
-		<module name="org.leolo.jmodbot.DictonaryModule" type="dymanic"/>
+		<staticModule name="org.leolo.jmodbot.BotInfoModule"/>
+		<dymanicModule name="org.leolo.jmodbot.DictonaryModule" runtimeName="dm" id="m_dm"/>
 	</modules>
 </configuration>
