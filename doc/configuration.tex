@@ -7,14 +7,58 @@
 \author{LO Kam Tao Leo\\\href{mailto:leolo@leolo.org}{leolo@leolo.org}}
 \begin{document}
 	\maketitle
+	
+	Copyright \textcopyright 2019, LO Kam Tao Leo
+	
+	All rights reserved.
+	
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are
+	met:
+	\begin{enumerate}
+		\item  Redistributions of source code must retain the above copyright
+	notice, this list of conditions and the following disclaimer. 
+	
+		\item Redistributions in binary form must reproduce the above copyright
+	notice, this list of conditions and the following disclaimer in
+	the documentation and/or other materials provided with the
+	distribution.  
+	
+		\item The name of the author may not be used to
+	endorse or promote products derived from this software without
+	specific prior written permission.
+	\end{enumerate}
+
+	THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+	IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+	INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+	STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+	IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE. 
+	
+	\vspace{0.5in}
+	\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+	\vspace{0.5in}
+	
+	The key words ``MUST'', ``MUST NOT'', ``REQUIRED'', ``SHALL'', ``SHALL
+	NOT'', ``SHOULD'', ``SHOULD NOT'', ``RECOMMENDED'',  ``MAY'', and
+	``OPTIONAL'' in this document are to be interpreted as described in
+	RFC 2119.
 	\tableofcontents
 	\chapter{Overview}
-	The configuration file for JModBot is an XML file. The root element is ``configuration''. This is an sample configuration file.
-	\inputminted[linenos]{xml}{bot.sample.xml}
+	The configuration file for JModBot is an XML file. The root element is ``configuration''. 
+	
 %	\chapter{Network}
 %	\chapter{Database}
 %	\chapter{Identity}
 %	\chapter{Module specific configuration}
 	\chapter{XML Schema for JModBot Configuration}
 	\inputminted[linenos]{xml}{config.xsd}
+	\chapter{Sample Configuration}
+	\inputminted[linenos]{xml}{bot.sample.xml}
 \end{document}
