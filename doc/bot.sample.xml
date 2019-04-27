@@ -31,7 +31,7 @@
 		</channels>
 		<modules>
 			<dymanicModule name="com.sample.jmodbot.modules.MarkovChain" runtimeName="mbot1" id="m1"/>
-			<dymanicModule name="com.sample.jmodbot.modules.MarkovChain" runtimeName="mbot2" id=""/>
+			<dymanicModule name="com.sample.jmodbot.modules.MarkovChain" runtimeName="mbot2" id="m2"/>
 			<excludeModule id="m_dm"/>
 		</modules>
 	</network>
