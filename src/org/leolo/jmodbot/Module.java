@@ -25,4 +25,8 @@ public abstract class Module {
 	protected final ConfigurationSnapshot getConfig() {
 		return socket.getConfig();
 	}
+	
+	public String getDefaultRuntimeName() {
+		return "__module_"+this.getClass().getCanonicalName().replace('.', '_');
+	}
 }
