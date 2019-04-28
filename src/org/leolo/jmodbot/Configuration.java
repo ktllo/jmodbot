@@ -12,6 +12,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.leolo.jmodbot.manager.DatabaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,8 @@ public class Configuration {
 	
 	private Map<String, Identity> identityMap;
 	private Set<Class<? extends CAPModule>> capModules;
+	private Set<Class<?>> entityClass;
+	
 	
 	class Identity{
 		String nickname;
@@ -41,6 +44,7 @@ public class Configuration {
 	private Configuration() {
 		identityMap = new HashMap<>();
 		capModules = new HashSet<>();
+		entityClass = new HashSet<>();
 	}
 	
 	public static Configuration getConfiguration(File file) throws Exception {
@@ -100,7 +104,14 @@ public class Configuration {
 			}
 		}
 		log.debug("{} cap modules loaded", capModules.size());
-		
+		Element database = rootElement.element("database");
+		String db_dialect = database.elementText("dialect");
+		String db_driver = database.elementText("driver");
+		String db_uri = database.element("server").elementText("connection-string");
+		String db_user = database.element("server").elementText("username");
+		String db_pass = database.element("server").elementText("password");
+		entityClass.add(org.leolo.jmodbot.model.DataPair.class);
+		DatabaseManager.setSessionFactory(db_uri, db_user, db_pass, db_dialect, db_driver, entityClass);
 	}
 
 	public static Configuration getConfiguration() throws Exception {

@@ -28,10 +28,7 @@
 		<xs:sequence>
 			<xs:element name="dialect" type="xs:string"/>
 			<xs:element name="driver" type="xs:string"/>
-			<xs:choice>
-				<xs:element name="server" type="dbServer"/>
-				<xs:element name="jndi" type="jndi"/>
-			</xs:choice>
+			<xs:element name="server" type="dbServer"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="identity">

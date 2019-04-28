@@ -1,5 +1,7 @@
 package org.leolo.jmodbot;
 
+import java.util.Set;
+
 import org.leolo.jmodbot.IRCConnectionConfiguration.ConfigurationSnapshot;
 
 public abstract class Module {
@@ -28,5 +30,9 @@ public abstract class Module {
 	
 	public String getDefaultRuntimeName() {
 		return "__module_"+this.getClass().getCanonicalName().replace('.', '_');
+	}
+	
+	public Set<Class<?>> getEntityClasses(){
+		return null;
 	}
 }
