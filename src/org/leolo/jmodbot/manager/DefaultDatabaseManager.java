@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.persistence.metamodel.EntityType;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -46,10 +48,15 @@ public class DefaultDatabaseManager implements DatabaseManager {
 			org.hibernate.cfg.Configuration conf = new org.hibernate.cfg.Configuration();
 			conf.addProperties(prop);
 			conf.addPackage("org.leolo.jmodbot.model");
+			conf.addResource("org/leolo/jmodbot/model/Users.hbm.xml");
 			for(Class<?> clazz:entityClass) {
 				conf.addAnnotatedClass(clazz);
 			}
 			sessionFactory = conf.buildSessionFactory();
+			log.info("Listing mapped entities, {} expected.",sessionFactory.getMetamodel().getEntities().size());
+			for(EntityType<?> et:sessionFactory.getMetamodel().getEntities()) {
+				log.info(">{} mapped to class {}",et.getName(),et.getJavaType());
+			}
 			checkSchemaVersion();
 		}
 	}
