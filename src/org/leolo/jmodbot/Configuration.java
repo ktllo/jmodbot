@@ -1,6 +1,7 @@
 package org.leolo.jmodbot;
 
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,11 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Entity;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.leolo.jmodbot.manager.DatabaseManager;
+import org.leolo.jmodbot.manager.DefaultDatabaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,10 +113,26 @@ public class Configuration {
 		String db_uri = database.element("server").elementText("connection-string");
 		String db_user = database.element("server").elementText("username");
 		String db_pass = database.element("server").elementText("password");
-		entityClass.add(org.leolo.jmodbot.model.DataPair.class);
-		DatabaseManager.setSessionFactory(db_uri, db_user, db_pass, db_dialect, db_driver, entityClass);
+		addEntityClass(org.leolo.jmodbot.model.DataPair.class);
+		new DefaultDatabaseManager(db_uri, db_user, db_pass, db_dialect, db_driver, entityClass);
 	}
-
+	
+	private void addEntityClass(Class<?> clazz){
+		Annotation [] annos = clazz.getAnnotations();
+		boolean ok = false;
+		for(Annotation anno:annos) {
+			if(anno instanceof Entity) {
+				ok = true;
+				break;
+			}
+		}
+		if(ok) {
+			this.entityClass.add(clazz);
+		}else {
+			log.error("Class {} cannot be added to the list because it does not have correction annotation.",clazz.getCanonicalName());
+		}
+	}
+	
 	public static Configuration getConfiguration() throws Exception {
 		return getConfiguration(new File("bot.xml"));
 	}
