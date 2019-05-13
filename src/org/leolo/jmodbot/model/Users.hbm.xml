@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!DOCTYPE hibernate-mapping 
+ PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"> 
+
+<hibernate-mapping> 
+	<class name="org.leolo.jmodbot.model.Users" table="USERS">
+		<id name="username" type="java.lang.String">
+			<column name="USER_ID" length="50"/>
+		</id>
+		
+		<property name="password" type="java.lang.String">
+			<column name="PASSWORD" length="500"/>
+		</property>
+		
+		<property name="email" type="java.lang.String">
+			<column name="EMAIL" length="500"/>
+		</property>
+		
+		<property name="createdDate" type="java.util.Date">
+			<column name="CREATED_DATE"/>
+		</property>
+		
+		<property name="lastPasswordDate" type="java.util.Date">
+			<column name="LAST_PWD_DATE"/>
+		</property>
+	</class>
+	<class name="org.leolo.jmodbot.model.UsersHostmask" table="USER_HOSTMASK">
+		<composite-id>
+			<key-many-to-one name="user" class="org.leolo.jmodbot.model.Users" column="user_id"/>
+			<key-property name="network" type="java.lang.String" length="50" column="network"/>
+		</composite-id>
+		<property name="network" type="java.lang.String">
+			<column name="NETWORK" length="50"/>
+		</property>
+		
+		<property name="hostmask" type="java.lang.String">
+			<column name="HOSTMASK" length="500"/>
+		</property>
+	</class>
+</hibernate-mapping>

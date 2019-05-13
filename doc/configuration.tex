@@ -1,0 +1,90 @@
+\documentclass{report}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.675in]{geometry}
+\usepackage[colorlinks = true]{hyperref}
+\usepackage{minted}
+\newcommand{\elem}[1]{\textless #1\textgreater}
+\title{JModBot Configuration Guide\\Version 0.1}
+\author{LO Kam Tao Leo\\\href{mailto:leolo@leolo.org}{leolo@leolo.org}}
+\begin{document}
+	\maketitle
+	
+	Copyright \textcopyright 2019, LO Kam Tao Leo
+	
+	All rights reserved.
+	
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are
+	met:
+	\begin{enumerate}
+		\item  Redistributions of source code must retain the above copyright
+	notice, this list of conditions and the following disclaimer. 
+	
+		\item Redistributions in binary form must reproduce the above copyright
+	notice, this list of conditions and the following disclaimer in
+	the documentation and/or other materials provided with the
+	distribution.  
+	
+		\item The name of the author may not be used to
+	endorse or promote products derived from this software without
+	specific prior written permission.
+	\end{enumerate}
+
+	THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+	IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
+	INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+	STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+	IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE. 
+	
+	\vspace{0.5in}
+	\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+	\vspace{0.5in}
+	
+	The key words ``MUST'', ``MUST NOT'', ``REQUIRED'', ``SHALL'', ``SHALL
+	NOT'', ``SHOULD'', ``SHOULD NOT'', ``RECOMMENDED'',  ``MAY'', and
+	``OPTIONAL'' in this document are to be interpreted as
+      described in BCP 14 [RFC2119] [RFC8174] when, and only when, they
+      appear in all capitals, as shown here.
+      %in this document are to be interpreted as described in
+	%RFC 2119\footnote{\url{https://tools.ietf.org/html/rfc2119}}.
+	\tableofcontents
+	\chapter{Overview}
+	The configuration file for JModBot is an XML file. The root element is ``configuration''. 
+	
+	\chapter{Network}
+	\chapter{Database}
+	\section{Custom Hibernate Configuration}
+	You MAY add the following Hibernate properties by using Generic Configuration Parameter (See Chapter~\ref{c:gcp}).
+	The custom hibernate configuration MUST be in bot scope.
+	\chapter{Identity}
+	\chapter{Modules}
+	\section{Static vs Dynamic module}
+	There are two different kind of module for JModBot, static and dynamic. These two kind of modules have a lot of differences for it's loading mechanism. In general, a module (except CAP modules, which are always static and handled differently) should be able to be loaded statically or dynamically.
+	\section{\elem{staticModule} and \elem{dynamicModule}}\label{key_staticModule}\label{key_dynamicModule}
+	The XML element \elem{staticModule} and \elem{dynamicModule} are used to indicate a static module or a dynamic module should be loaded respectively.
+	\chapter{Module specific configuration}
+	\chapter{Generic Configuration Parameters}\label{c:gcp}
+	Some of the module, or function, may requires, or permit some extra configuration to be provided. In order
+	to provide enough flexibility, you can includes \elem{custom-configs} element to various
+	different configuration scope.
+	\section{Configuration Scope}
+	\section{\elem{custom-configs}}
+	Each \elem{custom-configs} MUST contains one or more element 
+	\elem{custom-config}. 
+    \section{\elem{custom-config}}
+    Each \elem{custom-config} element MUST contains two attributes, ``name'' and 
+    ``value''. The ``name'' will be acting as the key to the configuration value.
+    
+    The scope of the custom configuration will be depends on its location.
+	\appendix
+	\chapter{XML Schema for JModBot Configuration}
+	\inputminted[linenos]{xml}{config.xsd}
+	\chapter{Sample Configuration}
+	\inputminted[linenos]{xml}{bot.sample.xml}
+\end{document}

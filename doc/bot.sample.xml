@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<configuration xmlns="http://jmodbot.leolo.org/2019/" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://jmodbot.leolo.org/2019/ config.xsd">
+	<network id="n_testnet" name="TestNet" identity="id_01">
+		<server host="192.168.56.102"/>
+		<server host="172.16.64.6">
+			<ssl enable="true" acceptAny="true"/>
+		</server>
+		<channels>
+			<channel name="#test"/>
+		</channels>
+		<custom-configs> 
+			<custom-config name="auto-rejoin" value="true"/>
+		</custom-configs>
+	</network>
+	<network id="freenode" name="Freenode" identity="id_01">
+		<server host="chat.freenode.net" port="7000">
+			<ssl enable="true">
+				<trustStore path="truststore.jks" passphrase="changeit"/>
+			</ssl>
+		</server>
+		<channels>
+			<channel name="#freenode">
+				<modules>
+					<excludeModule id="m1"/>
+					<excludeModule id="m2"/>
+				</modules>
+			</channel>
+			<channel name="##secretChannel" key="channelPassword"/>
+		</channels>
+		<modules>
+			<dymanicModule name="com.sample.jmodbot.modules.MarkovChain" runtimeName="mbot1" id="m1"/>
+			<dymanicModule name="com.sample.jmodbot.modules.MarkovChain" runtimeName="mbot2" id="m2"/>
+			<excludeModule id="m_dm"/>
+		</modules>
+	</network>
+	<database>
+		<dialect>org.hibernate.dialect.Oracle12cDialect</dialect>
+		<driver>oracle.jdbc.OracleDriver</driver>
+		<server>
+			<connection-string>jbdc:oracle:thin:@/localhost:1521/xe</connection-string>
+			<username>xe</username>
+			<password>password</password>
+		</server>
+	</database>
+	<identity id="id_01">
+		<nickname>JModBot</nickname>
+		<username>jmodbot</username>
+		<password>password</password>
+	</identity>
+	<caps>
+		<cap>org.leolo.jmodbot.SASLCapModule</cap>
+	</caps>
+	<modules>
+		<staticModule name="org.leolo.jmodbot.BotInfoModule"/>
+		<dymanicModule name="org.leolo.jmodbot.DictonaryModule" runtimeName="dm" id="m_dm"/>
+	</modules>
+</configuration>
