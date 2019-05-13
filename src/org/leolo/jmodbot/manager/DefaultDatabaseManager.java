@@ -14,8 +14,9 @@ import org.leolo.jmodbot.model.DataPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultDatabaseManager implements DatabaseManager {
-	private Logger log = LoggerFactory.getLogger(Configuration.class);
+@Deprecated
+public class DefaultDatabaseManager{
+	private Logger log = LoggerFactory.getLogger(DefaultDatabaseManager.class);
 	
 	private static final String TOKEN_MAIN = new String();
 	
@@ -61,10 +62,7 @@ public class DefaultDatabaseManager implements DatabaseManager {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.leolo.jmodbot.manager.DatabaseManager#getSession()
-	 */
-	@Override
+	
 	public Session getSession() {
 		synchronized(TOKEN_MAIN) {
 			if(sessionFactory==null) {

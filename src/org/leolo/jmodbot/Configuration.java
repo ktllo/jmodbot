@@ -11,10 +11,12 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 
+import org.apache.commons.collections4.map.UnmodifiableMap;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.leolo.jmodbot.manager.DatabaseManager;
 import org.leolo.jmodbot.manager.DefaultDatabaseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,13 +29,15 @@ public class Configuration {
 	private Map<String, Identity> identityMap;
 	private Set<Class<? extends CAPModule>> capModules;
 	private Set<Class<?>> entityClass;
+	private Map<String, String> customConfigs;
+	private Database database = new Database();
+	private DatabaseManager databaseManager;
 	
-	
-	class Identity{
-		String nickname;
-		String username;
-		String password;
-		String type;
+	public class Identity{
+		private String nickname;
+		private String username;
+		private String password;
+		private String type;
 		/* (non-Javadoc)
 		 * @see java.lang.Object#toString()
 		 */
@@ -42,10 +46,73 @@ public class Configuration {
 			return "Identity [nickname=" + nickname + ", username=" + username + ", password=" + password + ", type="
 					+ type + "]";
 		}
+		/**
+		 * @return the nickname
+		 */
+		public String getNickname() {
+			return nickname;
+		}
+		/**
+		 * @return the username
+		 */
+		public String getUsername() {
+			return username;
+		}
+		/**
+		 * @return the password
+		 */
+		public String getPassword() {
+			return password;
+		}
+		/**
+		 * @return the type
+		 */
+		public String getType() {
+			return type;
+		}
+	}
+	
+	public class Database{
+		private String dialect;
+		private String driver;
+		private String connectionString;
+		private String user;
+		private String password;
+		/**
+		 * @return the dialect
+		 */
+		public String getDialect() {
+			return dialect;
+		}
+		/**
+		 * @return the driver
+		 */
+		public String getDriver() {
+			return driver;
+		}
+		/**
+		 * @return the connectionString
+		 */
+		public String getConnectionString() {
+			return connectionString;
+		}
+		/**
+		 * @return the user
+		 */
+		public String getUser() {
+			return user;
+		}
+		/**
+		 * @return the password
+		 */
+		public String getPassword() {
+			return password;
+		}
 	}
 	
 	private Configuration() {
 		identityMap = new HashMap<>();
+		customConfigs = new HashMap<>();
 		capModules = new HashSet<>();
 		entityClass = new HashSet<>();
 	}
@@ -108,13 +175,13 @@ public class Configuration {
 		}
 		log.debug("{} cap modules loaded", capModules.size());
 		Element database = rootElement.element("database");
-		String db_dialect = database.elementText("dialect");
-		String db_driver = database.elementText("driver");
-		String db_uri = database.element("server").elementText("connection-string");
-		String db_user = database.element("server").elementText("username");
-		String db_pass = database.element("server").elementText("password");
-		addEntityClass(org.leolo.jmodbot.model.DataPair.class);
-		new DefaultDatabaseManager(db_uri, db_user, db_pass, db_dialect, db_driver, entityClass);
+		this.database.dialect = database.elementText("dialect");
+		this.database.driver = database.elementText("driver");
+		this.database.connectionString = database.element("server").elementText("connection-string");
+		this.database.user = database.element("server").elementText("username");
+		this.database.password = database.element("server").elementText("password");
+		databaseManager = new DatabaseManager(this);
+		databaseManager.init();
 	}
 	
 	private void addEntityClass(Class<?> clazz){
@@ -136,6 +203,9 @@ public class Configuration {
 	public static Configuration getConfiguration() throws Exception {
 		return getConfiguration(new File("bot.xml"));
 	}
-
+	
+	public Map<String, String> getBotScopeCustomConfig(){
+		return UnmodifiableMap.unmodifiableMap(customConfigs);
+	}
 
 }
